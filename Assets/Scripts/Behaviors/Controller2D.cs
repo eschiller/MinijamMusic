@@ -2,6 +2,18 @@
 using System.Collections;
 
 [RequireComponent(typeof(BoxCollider2D))]
+
+/*
+ * Basic starting script for 2d platform controller. A couple usage notes below:
+ * 
+ * * Any platform collider needs to be on the default layer and tagged with 
+ * either the "platform" or "passthrough_platform" tag.
+ * 
+ * * The player game object needs to be on the ignore Raycast layer
+ *
+ * * Right now, it's tightly coupled with the item.cs, controllerinput.cs, 
+ *   and PlatformerPhysics.cs. I should see if I can get that down.
+ */
 public class Controller2D : MonoBehaviour
 {
 
