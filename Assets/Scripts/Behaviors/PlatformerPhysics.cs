@@ -5,7 +5,7 @@ using System.Collections;
 [RequireComponent(typeof(SpriteRenderer))]
 public class PlatformerPhysics : MonoBehaviour
 {
-    private bool enabled;
+    private bool enablePhysics;
 
     public float x_vel = 0.0f;
     public float y_vel = 0.0f;
@@ -48,12 +48,12 @@ public class PlatformerPhysics : MonoBehaviour
 
         CalculateRaySpacing();
         velocity = Vector2.zero;
-        enabled = true;
+        enablePhysics = true;
     }
 
     void Update()
     {
-        if (enabled)
+        if (enablePhysics)
         {
             MoveSprite();
             UpdateRaycastOrigins();
@@ -65,12 +65,12 @@ public class PlatformerPhysics : MonoBehaviour
 
     public void enable()
     {
-        enabled = true;
+        enablePhysics = true;
     }
 
     public void disable()
     {
-        enabled = false;
+        enablePhysics = false;
     }
 
     void checkVerticalCollisions()
