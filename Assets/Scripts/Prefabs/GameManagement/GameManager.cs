@@ -19,11 +19,11 @@ public class GameManager : MonoBehaviour
     private GameObject cam1;
     private GameObject cam2;
 
-    private string previousScene;
-    private string currentScene;
+    private string previousScene{ get; set; }
+    private string currentScene{ get; set; }
 
-    // Use this for initialization
-    void Start()
+// Use this for initialization
+void Start()
     {
         DontDestroyOnLoad(this);
 
@@ -31,9 +31,6 @@ public class GameManager : MonoBehaviour
         {
             Debug.Log("Error: need to set firstScene variable in GameManager.");
         }
-
-        AsyncOperation asyncLoadLevel;
-        asyncLoadLevel = SceneManager.LoadSceneAsync(firstScene);
 
         if (initializePlayersAndCams)
         {
