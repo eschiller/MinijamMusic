@@ -2,18 +2,6 @@
 using System.Collections;
 
 [RequireComponent(typeof(BoxCollider2D))]
-
-/*
- * Basic starting script for 2d platform controller. A couple usage notes below:
- * 
- * * Any platform collider needs to be on the default layer and tagged with 
- * either the "platform" or "passthrough_platform" tag.
- * 
- * * The player game object needs to be on the ignore Raycast layer
- *
- * * Right now, it's tightly coupled with the item.cs, controllerinput.cs, 
- *   and PlatformerPhysics.cs. I should see if I can get that down.
- */
 public class Controller2D : MonoBehaviour
 {
 
@@ -84,7 +72,6 @@ public class Controller2D : MonoBehaviour
             hit = Physics2D.Raycast(rayOriginVert + Vector2.right * verticalRaySpacing * i, rayDirectionVert, Mathf.Abs(rayDistanceVert));
             if (hit)
             {
-                Debug.Log("Got a hit!");
                 if (hit.collider.gameObject.tag == "platform" || 
                     ((hit.collider.gameObject.tag == "passthrough_platform") && (rayDirectionVert == Vector2.down)))
                 {

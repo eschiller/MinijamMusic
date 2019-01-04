@@ -8,8 +8,8 @@ public class ExampleStateMachine : StateMachine {
 
     public void Start()
     {
-        AddState("wander", new WanderState("idle", 1.0f, wanderStateSpeed, this.transform));
-        AddState("idle", new IdleState("wander", 1.0f));
+        AddState("wander", new WanderState("idle", 1.0f, wanderStateSpeed, this.GetComponent<PlatformerPhysics>()));
+        AddState("idle", new IdleState("wander", 10.0f));
 
         ChangeState("wander");
     }

@@ -45,4 +45,3 @@ public class ControllerInput : MonoBehaviour {
         controller2D.movement(directionInputX, jumping);
     }
 }
-

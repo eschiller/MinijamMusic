@@ -5,16 +5,16 @@ public class WanderState : FSMState
 {
     public string nextState;
     public int speed = 100;
-    public Transform parentTransform;
+    public PlatformerPhysics parentController;
     public float expireTime = 1.0f;
 
     private float timeCount = 0.0f;
 
-    public WanderState(string nextState, float expireTime, int speed, Transform transform) {
+    public WanderState(string nextState, float expireTime, int speed, PlatformerPhysics controller) {
         this.nextState = nextState;
         this.expireTime = expireTime;
         this.speed = speed;
-        this.parentTransform = transform;
+        this.parentController = controller;
     }
 
     public override FSMState CheckForNewState()
@@ -32,11 +32,12 @@ public class WanderState : FSMState
 
     public override void UpdateState()
     {
-        parentTransform.Translate(Vector2.left * speed * Time.deltaTime);
+        parentController.setActiveXVel(-1);
 
         timeCount += Time.deltaTime;
         if (timeCount > this.expireTime)
         {
+            Debug.Log("time expired, changing to idle");
             this.timeCount = 0.0f;
             this.parentMachine.ChangeState(nextState);
         }

@@ -33,7 +33,6 @@ public class Item : MonoBehaviour
         Debug.Log("throwing item");
         ownerObject = null;
         pphys.enable();
-        pphys.setXVel(2.0f * direction.x);
+        pphys.setActiveXVel(2.0f * direction.x);
     }
 }
-

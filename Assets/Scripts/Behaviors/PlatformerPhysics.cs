@@ -5,26 +5,28 @@ using System.Collections;
 [RequireComponent(typeof(SpriteRenderer))]
 public class PlatformerPhysics : MonoBehaviour
 {
-    private bool enablePhysics;
 
-    public float x_vel = 0.0f;
-    public float y_vel = 0.0f;
+    public float activeXVel = 0.0f;
+    public float activeYVel = 0.0f;
 
     public float gravity = -.05f;
     public float skinWidth = .03f;
-    public float speed = 3f;
+    public float speed = 50f;
     public int horizontalRayCount = 4;
     public int verticalRayCount = 4;
     public float jumpVelocity = .2f;
     public float maxClimbAngle = 50f;
     public float xDrag = 10f;
+    public float xBounceFactor = 0.0f;
 
+    private bool isEnabled;
+    private int framesHorizontalCol = 0;
+    private int framesVerticalCol = 0;
 
     bool canJump = false;
     float horizontalRaySpacing;
     float horizontalSpeed;
     float verticalRaySpacing;
-
 
     BoxCollider2D myCollider;
     Animator myAnimator;
@@ -40,6 +42,7 @@ public class PlatformerPhysics : MonoBehaviour
         public Vector2 bottomLeft, bottomRight;
     }
 
+
     void Start()
     {
         myCollider = GetComponent<BoxCollider2D>();
@@ -48,37 +51,67 @@ public class PlatformerPhysics : MonoBehaviour
 
         CalculateRaySpacing();
         velocity = Vector2.zero;
-        enablePhysics = true;
+        isEnabled = true;
     }
+
 
     void Update()
     {
-        if (enablePhysics)
+        if (isEnabled)
         {
             MoveSprite();
             UpdateRaycastOrigins();
             UpdateVelocity();
+            UpdateAnimator();
             checkVerticalCollisions();
             checkHorizontalCollisions();
         }
     }
 
+
     public void enable()
     {
-        enablePhysics = true;
+        isEnabled = true;
     }
+
 
     public void disable()
     {
-        enablePhysics = false;
+        isEnabled = false;
     }
+
+
+    public void addForceXVel(float addvel)
+    {
+        activeXVel += addvel;
+    }
+
+
+    public void setActiveXVel(float newvel)
+    {
+        activeXVel = newvel;
+    }
+
+
+    public void addForceYVel(float addvel)
+    {
+        activeYVel += addvel;
+    }
+
+
+    public void setActiveYVel(float newvel)
+    {
+        activeYVel = newvel;
+    }
+
 
     void checkVerticalCollisions()
     {
         Vector2 rayDirectionVert, rayOriginVert;
 
         float rayDistanceVert;
-        RaycastHit2D hit;
+        RaycastHit2D hit ;
+        bool hadVertHit = false;
 
         //check vertical collisions
         rayDirectionVert = (velocity.y <= 0 ? Vector2.down : Vector2.up);
@@ -90,6 +123,7 @@ public class PlatformerPhysics : MonoBehaviour
             hit = Physics2D.Raycast(rayOriginVert + Vector2.right * verticalRaySpacing * i, rayDirectionVert, Mathf.Abs(rayDistanceVert));
             if (hit)
             {
+                hadVertHit = true;
                 if (hit.collider.gameObject.tag == "platform")
                 {
                     velocity.y = (hit.distance - skinWidth) * rayDirectionVert.y;
@@ -107,19 +141,26 @@ public class PlatformerPhysics : MonoBehaviour
                 }
             }
         }
+
+        if (hadVertHit) {
+            framesVerticalCol++;
+            framesVerticalCol = Mathf.Min(framesVerticalCol, int.MaxValue - 1);
+        } else {
+            framesVerticalCol = 0;
+        }
     }
+
 
     void checkHorizontalCollisions()
     {
         Vector2 rayDirectionHoriz, rayOriginHoriz;
         float rayDistanceHoriz;
         RaycastHit2D hit;
+        bool hadHorizHit = false;
 
-        //check vertical collisions 
+        //check horizontal collisions 
         rayDirectionHoriz = (velocity.x <= 0 ? Vector2.left : Vector2.right);
         rayOriginHoriz = (velocity.x <= 0 ? raycastOrigins.bottomLeft : raycastOrigins.bottomRight);
-        //rayOriginHoriz.x = rayOriginHoriz.x + (rayDirectionHoriz.x * skinWidth * .6f);
-
         rayDistanceHoriz = (Mathf.Abs(velocity.x) + skinWidth) * rayDirectionHoriz.x;
 
         for (int i = 0; i < horizontalRayCount; i++)
@@ -129,6 +170,7 @@ public class PlatformerPhysics : MonoBehaviour
 
             if (hit)
             {
+                hadHorizHit = true;
                 if (hit.collider.gameObject.tag == "platform")
                 {
                     {
@@ -145,8 +187,17 @@ public class PlatformerPhysics : MonoBehaviour
                 }
             }
         }
-    }
 
+        if (hadHorizHit)
+        {
+            framesHorizontalCol++;
+            framesHorizontalCol = Mathf.Min(framesHorizontalCol, int.MaxValue - 1);
+        }
+        else
+        {
+            framesHorizontalCol = 0;
+        }
+    }
 
 
     void slopeAdjustment(Vector2 slopeNormal)
@@ -160,29 +211,41 @@ public class PlatformerPhysics : MonoBehaviour
 
     void UpdateVelocity()
     {
+        //handle gravity
         velocity.y += gravity * Time.deltaTime;
 
-        if ((x_vel < -.3f) || (x_vel > .3f))
+
+        if ((activeXVel < -.3f) || (activeXVel > .3f))
         {
+            Debug.Log("Large x_vel, speed is " + speed);
             horizontalSpeed = speed;
-            velocity.x = x_vel * horizontalSpeed * Time.deltaTime;
-            Debug.Log("No drag, velocity is " + velocity.x);
+            velocity.x = activeXVel * horizontalSpeed * Time.deltaTime;
         }
         else
         {
+            Debug.Log("horizontal collision count at " + framesHorizontalCol);
             // if we've gotten pretty slow, just stop. Otherwise, reduce with drag
-            if (horizontalSpeed < .5f)
+            if (horizontalSpeed < .5f || (framesHorizontalCol > 1))
             {
                 velocity.x = 0.0f;
             }
             else
             {
+                Debug.Log("about to drag");
                 horizontalSpeed -= (Time.deltaTime * xDrag);
                 velocity.x = horizontalSpeed * Time.deltaTime * Mathf.Sign(velocity.x);
-                Debug.Log("Just dragged, new velocity is " + velocity.x.ToString("F5"));
+                if (framesHorizontalCol == 1) {
+                    Debug.Log("should be bouncing!");
+                    velocity.x *= -1;
+                }
             }
         }
+        Debug.Log("Velocity is " + velocity.x);
+        activeXVel = 0.0f;
+    }
 
+
+    void UpdateAnimator() {
         if (myAnimator)
         {
             myAnimator.SetFloat("runVelocity", Mathf.Abs(velocity.x));
@@ -199,10 +262,12 @@ public class PlatformerPhysics : MonoBehaviour
         }
     }
 
+
     void MoveSprite()
     {
         transform.Translate(velocity);
     }
+
 
     void UpdateRaycastOrigins()
     {
@@ -215,6 +280,7 @@ public class PlatformerPhysics : MonoBehaviour
         raycastOrigins.topRight = new Vector2(bounds.max.x, bounds.max.y);
     }
 
+
     void CalculateRaySpacing()
     {
         Bounds bounds = myCollider.bounds;
@@ -225,15 +291,5 @@ public class PlatformerPhysics : MonoBehaviour
 
         horizontalRaySpacing = bounds.size.y / (horizontalRayCount - 1);
         verticalRaySpacing = bounds.size.x / (verticalRayCount - 1);
-    }
-
-
-    public void addXVel(float addvel) {
-        x_vel += addvel;
-    }
-
-
-    public void setXVel(float newvel){
-        x_vel = newvel;
     }
 }
