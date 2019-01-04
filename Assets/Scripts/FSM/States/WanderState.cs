@@ -5,12 +5,16 @@ public class WanderState : FSMState
 {
     public string nextState;
     public int speed = 100;
-    public PlatformerController2D parentController;
+    public PlatformerPhysics parentController;
     public float expireTime = 1.0f;
-
+    private int walkDirection = 1;
     private float timeCount = 0.0f;
 
-    public WanderState(string nextState, float expireTime, int speed, PlatformerController2D controller) {
+    private System.Random rnd;
+
+    public WanderState(string nextState, float expireTime, int speed, PlatformerPhysics controller) {
+        rnd = new System.Random();
+
         this.nextState = nextState;
         this.expireTime = expireTime;
         this.speed = speed;
@@ -24,6 +28,8 @@ public class WanderState : FSMState
 
     public override void EnterState()
     {
+        walkDirection = rnd.Next(-1, 2);
+        Debug.Log("walk dir this time is " + walkDirection);
     }
 
     public override void ExitState()
@@ -32,7 +38,7 @@ public class WanderState : FSMState
 
     public override void UpdateState()
     {
-        parentController.setActiveXVel(-1);
+        parentController.setActiveXVel(walkDirection);
 
         timeCount += Time.deltaTime;
         if (timeCount > this.expireTime)
