@@ -1,31 +1,59 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
-public class StateMachine : MonoBehaviour {
-	public IState startingState;
-	private IState currentState;
-	private IState previousState;
+public class StateMachine : MonoBehaviour
+{
+    public FSMState startingState;
+    public FSMState currentState;
+    public FSMState previousState;
+
+    public Dictionary<string, FSMState> allStates;
+
+    public StateMachine() {
+        allStates = new Dictionary<string, FSMState>();
+    }
 
     private void Start()
     {
-        currentState = startingState;
-        changeState(startingState);
     }
 
-    public virtual void changeState(IState newState) {
-		previousState = currentState;
-		currentState.exitState ();
-		currentState = newState;
-        currentState.setStateMachine(this);
-		currentState.enterState ();
-	}
+    private void Update()
+    {
+        if (currentState == null) {
+            currentState = startingState;
+        }
 
-	public virtual void revertState() {
-		IState tempState = currentState;
-		currentState.exitState ();
-		currentState = previousState;
-		previousState = tempState;
-        currentState.setStateMachine(this);
-		currentState.enterState ();
-	}
+        if (previousState == null) {
+            previousState = startingState;
+        }
+
+        currentState.UpdateState();
+    }
+
+    public virtual void ChangeState(string newState)
+    {
+        if (currentState != null)
+        {
+            previousState = currentState;
+            currentState.ExitState();
+        }
+        currentState = allStates[newState];
+        currentState.SetStateMachine(this);
+        currentState.EnterState();
+    }
+
+    public virtual void RevertState()
+    {
+        FSMState tempState = currentState;
+        currentState.ExitState();
+        currentState = previousState;
+        previousState = tempState;
+        currentState.SetStateMachine(this);
+        currentState.EnterState();
+    }
+
+    public void AddState(string stateName, FSMState s) {
+        allStates.Add(stateName, s);
+    }
 }
