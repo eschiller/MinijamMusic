@@ -3,7 +3,7 @@ using System.Collections;
 
 [RequireComponent(typeof(BoxCollider2D))]
 [RequireComponent(typeof(SpriteRenderer))]
-public class PlatformerPhysics : MonoBehaviour
+public class PlatformerController2D : MonoBehaviour
 {
 
     public float activeXVel = 0.0f;

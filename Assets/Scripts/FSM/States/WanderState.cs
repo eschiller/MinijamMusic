@@ -5,12 +5,12 @@ public class WanderState : FSMState
 {
     public string nextState;
     public int speed = 100;
-    public PlatformerPhysics parentController;
+    public PlatformerController2D parentController;
     public float expireTime = 1.0f;
 
     private float timeCount = 0.0f;
 
-    public WanderState(string nextState, float expireTime, int speed, PlatformerPhysics controller) {
+    public WanderState(string nextState, float expireTime, int speed, PlatformerController2D controller) {
         this.nextState = nextState;
         this.expireTime = expireTime;
         this.speed = speed;

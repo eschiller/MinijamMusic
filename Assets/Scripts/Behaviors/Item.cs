@@ -6,13 +6,13 @@ public class Item : MonoBehaviour
 {
     public Transform ownerObject;
 
-    PlatformerPhysics pphys;
+    PlatformerController2D pphys;
 
 
     // Use this for initialization
     void Start()
     {
-        pphys = GetComponent<PlatformerPhysics>();
+        pphys = GetComponent<PlatformerController2D>();
     }
 
     // Update is called once per frame
