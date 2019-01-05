@@ -5,14 +5,14 @@ public class WanderState : FSMState
 {
     public string nextState;
     public int speed = 100;
-    public PlatformerPhysics parentController;
+    public PlatformerController2D parentController;
     public float expireTime = 1.0f;
     private int walkDirection = 1;
     private float timeCount = 0.0f;
 
     private System.Random rnd;
 
-    public WanderState(string nextState, float expireTime, int speed, PlatformerPhysics controller) {
+    public WanderState(string nextState, float expireTime, int speed, PlatformerController2D controller) {
         rnd = new System.Random();
 
         this.nextState = nextState;
