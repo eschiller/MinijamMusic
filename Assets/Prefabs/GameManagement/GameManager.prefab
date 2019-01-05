@@ -40,12 +40,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8308c74d43ef437183799f3ab53fa76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  firstScene: 
+  initializePlayersAndCams: 0
+  HUDPrefab: {fileID: 1489687009402058, guid: 246e484047b36487081a227f7794f457, type: 2}
   players: 1
+  player1: {fileID: 0}
+  player2: {fileID: 0}
   p1cam: {fileID: 0}
   p1coopcam: {fileID: 0}
   p2coopcam: {fileID: 0}
-  player1: {fileID: 0}
-  player2: {fileID: 0}
+  cameraFollowsPlayer: 0
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
