@@ -6,13 +6,13 @@ public class Item : MonoBehaviour
 {
     public Transform ownerObject;
 
-    PlatformerController2D pphys;
+    PlatformerController2D pControl;
 
 
     // Use this for initialization
     void Start()
     {
-        pphys = GetComponent<PlatformerController2D>();
+        pControl = GetComponent<PlatformerController2D>();
     }
 
     // Update is called once per frame
@@ -25,14 +25,14 @@ public class Item : MonoBehaviour
     }
 
     public void grabItem(Transform newOwner) {
-        pphys.disable();
+        pControl.disable();
         ownerObject = newOwner;
     }
 
     public void throwItem(Vector2 direction) {
         Debug.Log("throwing item");
         ownerObject = null;
-        pphys.enable();
-        pphys.setActiveXVel(2.0f * direction.x);
+        pControl.enable();
+        pControl.setActiveXVel(2.0f * direction.x);
     }
 }

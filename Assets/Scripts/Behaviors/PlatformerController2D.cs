@@ -105,6 +105,16 @@ public class PlatformerController2D : MonoBehaviour
     }
 
 
+    public void Jump(){
+        if (canJump)
+        {
+            velocity.y += jumpVelocity;
+            myAnimator.SetBool("isJumping", true);
+            canJump = false;
+        }
+    }
+
+
     void checkVerticalCollisions()
     {
         Vector2 rayDirectionVert, rayOriginVert;
@@ -211,19 +221,19 @@ public class PlatformerController2D : MonoBehaviour
 
     void UpdateVelocity()
     {
+        Debug.Log("activeXVel is " + activeXVel);
+
         //handle gravity
         velocity.y += gravity * Time.deltaTime;
 
 
         if ((activeXVel < -.3f) || (activeXVel > .3f))
         {
-            Debug.Log("Large x_vel, speed is " + speed);
             horizontalSpeed = speed;
             velocity.x = activeXVel * horizontalSpeed * Time.deltaTime;
         }
         else
         {
-            Debug.Log("horizontal collision count at " + framesHorizontalCol);
             // if we've gotten pretty slow, just stop. Otherwise, reduce with drag
             if (horizontalSpeed < .5f || (framesHorizontalCol > 1))
             {
@@ -231,16 +241,13 @@ public class PlatformerController2D : MonoBehaviour
             }
             else
             {
-                Debug.Log("about to drag");
                 horizontalSpeed -= (Time.deltaTime * xDrag);
                 velocity.x = horizontalSpeed * Time.deltaTime * Mathf.Sign(velocity.x);
                 if (framesHorizontalCol == 1) {
-                    Debug.Log("should be bouncing!");
                     velocity.x *= -1;
                 }
             }
         }
-        Debug.Log("Velocity is " + velocity.x);
         activeXVel = 0.0f;
     }
 
