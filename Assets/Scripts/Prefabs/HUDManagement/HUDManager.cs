@@ -10,6 +10,12 @@ public class HUDManager : MonoBehaviour {
     public GameObject healthIcon;
     GameObject allCanvas;
 
+    private List<GameObject> allHealth;
+
+    public  HUDManager() {
+        allHealth = new List<GameObject>();
+    }
+
 	// Use this for initialization
 	void Start () {
         allCanvas = GameObject.Find("AllCanvas");
@@ -34,11 +40,17 @@ public class HUDManager : MonoBehaviour {
     }
 
 
-    public void SetHealth(int health, int xPadding = 16, int yPadding = -16, int spacing = 48) {
+    public void SetHealth(int health, int xPadding = 16, int yPadding = -16, int spacing = 20) {
+        foreach(GameObject hIcon in allHealth) {
+            Destroy(hIcon);
+        }
+
         for (int i = 0; i < health; i++) {
             GameObject aHeart;
             aHeart = Instantiate(healthIcon, new Vector3((xPadding + (spacing * i)), yPadding, -1), Quaternion.identity);
             aHeart.transform.SetParent(allCanvas.transform, false);
+            Debug.Log(aHeart.transform.name);
+            allHealth.Add(aHeart);
         }
     }
 }

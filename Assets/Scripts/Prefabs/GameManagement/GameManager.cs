@@ -84,6 +84,11 @@ public class GameManager : MonoBehaviour
     }
 
 
+    public HUDManager getHUDManager() {
+        return myHUDManager;
+    }
+
+
     public void TogglePause() {
         if (isPaused) {
             myHUDManager.UnpauseGame();

@@ -29,7 +29,6 @@ public class WanderState : FSMState
     public override void EnterState()
     {
         walkDirection = rnd.Next(-1, 2);
-        Debug.Log("walk dir this time is " + walkDirection);
     }
 
     public override void ExitState()
@@ -43,7 +42,6 @@ public class WanderState : FSMState
         timeCount += Time.deltaTime;
         if (timeCount > this.expireTime)
         {
-            Debug.Log("time expired, changing to idle");
             this.timeCount = 0.0f;
             this.parentMachine.ChangeState(nextState);
         }

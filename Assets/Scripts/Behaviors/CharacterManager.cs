@@ -9,7 +9,7 @@ public class CharacterManager : MonoBehaviour {
     public int health = 1;
     private bool isDead = false;
 
-    SpriteRenderer myRenderer;
+    protected SpriteRenderer myRenderer;
 
 	// Use this for initialization
 	void Start () {
@@ -31,15 +31,14 @@ public class CharacterManager : MonoBehaviour {
     }
 
 
-    public void LoseHealth (int loss) {
+    public virtual void LoseHealth (int loss) {
         health -= loss;
     }
 
 
-    public void GainHealth(int gain) {
+    public virtual void GainHealth(int gain) {
         health += gain;
     }
-
 
     public void Die() {
         //set animation for death
@@ -47,11 +46,5 @@ public class CharacterManager : MonoBehaviour {
         Destroy(gameObject, .80f);
         InvokeRepeating("FlipRenderer", 0.0f, .08f);
 
-    }
-
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        Debug.Log("In intern collider");
     }
 }
