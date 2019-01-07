@@ -6,6 +6,8 @@ TagManager:
   tags:
   - platform
   - passthrough_platform
+  - Enemy
+  - GameManager
   layers:
   - Default
   - TransparentFX
