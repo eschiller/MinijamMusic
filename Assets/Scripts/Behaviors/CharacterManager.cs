@@ -19,6 +19,8 @@ public class CharacterManager : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
+        Debug.Log(this.tag + " health is " + health);
+        Debug.Log(this.tag + " isDead is " + isDead);
         //check if we're dead
         if ((health <= 0) && !isDead) {
             Die();
@@ -32,7 +34,9 @@ public class CharacterManager : MonoBehaviour {
 
 
     public virtual void LoseHealth (int loss) {
+        Debug.Log("In charman losehealth");
         health -= loss;
+        Debug.Log("Health of " + this.tag + " is now " + health);
     }
 
 
@@ -41,6 +45,8 @@ public class CharacterManager : MonoBehaviour {
     }
 
     public void Die() {
+        Debug.Log(this.tag + "Should be dying");
+
         //set animation for death
         isDead = true;
         Destroy(gameObject, .80f);

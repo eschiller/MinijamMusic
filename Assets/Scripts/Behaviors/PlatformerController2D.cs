@@ -5,6 +5,7 @@ using System.Collections;
 [RequireComponent(typeof(SpriteRenderer))]
 public class PlatformerController2D : MonoBehaviour
 {
+    public GameObject genericAttack;
 
     public float activeXVel = 0.0f;
     public float activeYVel = 0.0f;
@@ -115,6 +116,16 @@ public class PlatformerController2D : MonoBehaviour
     }
 
 
+    public void Attack() {
+        if (genericAttack != null) {
+            GameObject attackObject = Instantiate(genericAttack, CalculateItemSpawnLocation(), Quaternion.identity);
+            attackObject.GetComponent<SpriteRenderer>().flipX = myRenderer.flipX;
+        } else {
+            Debug.Log("Can't attack. Generic attack hasn't been set in PlatfomerController2d.");
+        }
+    }
+
+
     void checkVerticalCollisions()
     {
         Vector2 rayDirectionVert, rayOriginVert;
@@ -221,11 +232,10 @@ public class PlatformerController2D : MonoBehaviour
 
     void UpdateVelocity()
     {
-        Debug.Log("activeXVel is " + activeXVel);
 
         //handle gravity
         velocity.y += gravity * Time.deltaTime;
-
+        velocity.y *= Time.timeScale;
 
         if ((activeXVel < -.3f) || (activeXVel > .3f))
         {
@@ -298,5 +308,12 @@ public class PlatformerController2D : MonoBehaviour
 
         horizontalRaySpacing = bounds.size.y / (horizontalRayCount - 1);
         verticalRaySpacing = bounds.size.x / (verticalRayCount - 1);
+    }
+
+
+    Vector3 CalculateItemSpawnLocation(float xPadding = 8f) {
+        float itemLocationX = ((myRenderer.size.x / 2) + xPadding) * Mathf.Sign(velocity.x) + transform.position.x;
+        return new Vector3(itemLocationX, transform.position.y, -1);
+
     }
 }

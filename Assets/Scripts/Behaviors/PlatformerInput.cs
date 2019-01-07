@@ -7,6 +7,7 @@ public class PlatformerInput : MonoBehaviour {
     public PlatformerController2D myPlatformerPhysics;
     bool jumping;
     bool hasItem;
+    bool action1;
 
 
 	// Use this for initialization
@@ -18,11 +19,16 @@ public class PlatformerInput : MonoBehaviour {
 	void Update () {
         directionInputX = Input.GetAxisRaw("Horizontal");
         jumping = Input.GetButtonDown("Jump");
+        action1 = Input.GetButtonDown("Fire1");
 
         if (jumping)
         {
             Debug.Log("Space is down");
             myPlatformerPhysics.Jump();
+        }
+
+        if (action1) {
+            myPlatformerPhysics.Attack();
         }
         myPlatformerPhysics.setActiveXVel(directionInputX);
     }

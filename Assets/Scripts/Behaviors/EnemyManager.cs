@@ -5,14 +5,14 @@ using UnityEngine;
 public class EnemyManager : CharacterManager {
     public int touchDamange = 1;
 
+    BoxCollider2D myCollider;
+
+
 	// Use this for initialization
 	void Start () {
+        myCollider = GetComponent<BoxCollider2D>();
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
 
     private void OnTriggerEnter2D(Collider2D other)
     {
