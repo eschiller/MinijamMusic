@@ -28,6 +28,11 @@ public class HUDManager : MonoBehaviour {
 		
 	}
 
+    public void SetMiddleText(string sometext) {
+        middleText.text = sometext;
+        middleText.enabled = true;
+    }
+
     public void PauseGame() {
         middleText.text = "Paused";
         middleText.enabled = true;

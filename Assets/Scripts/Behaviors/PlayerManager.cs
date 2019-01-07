@@ -21,7 +21,6 @@ public class PlayerManager : CharacterManager
 
     public override void LoseHealth(int loss)
     {
-        Debug.Log("In player manager losehealth");
         health -= loss;
         myHUDMgr.SetHealth(this.health);
     }

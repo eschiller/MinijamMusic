@@ -13,6 +13,8 @@ public class LevelManager : MonoBehaviour {
     public GameObject p2coopcam;
     public bool cameraFollowsPlayer = false;
 
+    public GameManager gameMgr;
+
     private GameObject cam1;
     private GameObject cam2;
 
@@ -21,12 +23,37 @@ public class LevelManager : MonoBehaviour {
         if (initializePlayersAndCams) {
             this.InitPlayersAndCams();
         }
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
+        gameMgr = GameObject.Find("GameManager").GetComponent<GameManager>();
+
+    }
+
+    // Update is called once per frame
+    void Update () {
+        CheckForWin();
+        CheckForLoss();
+    }
+
+
+    public void CheckForWin() {
+        int enemyCount = GameObject.FindGameObjectsWithTag("Enemy").Length;
+
+        Debug.Log("Enemy count is " + enemyCount);
+        //Simple win state of checking of all enemies are dead
+        if (enemyCount == 0) {
+            Debug.Log("Gonna win the game");
+            gameMgr.WinGame();
+        }
+    }
+
+    public void CheckForLoss()
+    {
+        //Simple win state of checking of all enemies are dead
+        if (GameObject.FindGameObjectsWithTag("Player").Length == 0)
+        {
+            gameMgr.LoseGame();
+        }
+    }
 
 
     public void InitPlayersAndCams()
@@ -88,4 +115,3 @@ public class LevelManager : MonoBehaviour {
         }
     }
 }
-
