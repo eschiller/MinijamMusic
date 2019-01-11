@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlatformerInput : MonoBehaviour {
-    float directionInputX;
+    float directionInputX, directionInputY;
     public PlatformerController2D myPlatformerPhysics;
     bool jumping;
     bool hasItem;
@@ -18,8 +18,15 @@ public class PlatformerInput : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         directionInputX = Input.GetAxisRaw("Horizontal");
+        directionInputY = Input.GetAxisRaw("Vertical");
         jumping = Input.GetButtonDown("Jump");
         action1 = Input.GetButtonDown("Fire1");
+
+        if (directionInputY < -.3f) {
+            myPlatformerPhysics.Duck();
+        } else {
+            myPlatformerPhysics.Unduck();
+        }
 
         if (jumping)
         {

@@ -1,8 +1,11 @@
-﻿using System.Collections;
+﻿/*
+ * CharacterManager class is intended to house functionality shared across
+ * all characters, such asPlayers, Enemies, NPCs, etc... possibly even some 
+ * entities such as breakable walls. 
+ */
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-
 
 public class CharacterManager : MonoBehaviour {
 
@@ -41,12 +44,14 @@ public class CharacterManager : MonoBehaviour {
         health += gain;
     }
 
-    public void Die() {
-
+    /*
+     * Destroys the game object and blinks it for a specified amount of time
+     */
+    public void Die(float deathDelay = 0.8f, float blinkDelay=.08f) {
         //set animation for death
         isDead = true;
-        Destroy(gameObject, .80f);
-        InvokeRepeating("FlipRenderer", 0.0f, .08f);
+        Destroy(gameObject, deathDelay);
+        InvokeRepeating("FlipRenderer", 0.0f, blinkDelay);
 
     }
 }

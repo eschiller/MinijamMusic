@@ -1,38 +1,4 @@
-﻿/*
- * PlatformerController2D is intended to be a generic physics controller for
- * use in platformers without using the built in unity physics engine (instead
- * rays are used to check for collisions).
- * 
- * Other scripts (for example, and input handling script in the case of players)
- * should utilize this controller primarily through the setActiveX/YVel
- * functions, where are for use with continuous input, or the addForceX/YVel
- * functions, which are for one-time additions of velocity. Additionally, the 
- * Jump and Attack functions can be used as expected. Attack will simply spawn
- * the prefab specified in the Generic Attack field in the inspector (for an
- * example of this, check Assets/Prefabs/Items/GenericAttack).
- * 
- * There are also a series of modifiers for the physics of the gameobject, such
- * as gravity, jumpVelocity, xDrag (friction) and xBounceFactor (amount the
- * the asset bounces off walls).
- * 
- * To fully utilize the animation transitions, an Animator should be set up with
- * at least three states:
- *   * Idle
- *   * Moving
- *   * Jumping
- * 
- * Animator parameters isJumping and runVelocity must be set up to handle
- * transitions between these.
- * 
- * Current physics default values are set for mid-size (think 16-bit era) pixel
- * art sprites at 1 PPU. At some point I'd like to dynamically set this value 
- * based on asset sizes, but for the time being, if you add this to a gameobject
- * and it's not responding as expected, the physics settings likely need to be
- * tweaked to better values for your sprites/PPU settings.
- */
-
-
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 
 [RequireComponent(typeof(BoxCollider2D))]
@@ -59,6 +25,7 @@ public class PlatformerController2D : MonoBehaviour
     private int framesVerticalCol = 0;
 
     bool canJump = false;
+    bool isDucking = false;
     float horizontalRaySpacing;
     float horizontalSpeed;
     float verticalRaySpacing;
@@ -104,74 +71,44 @@ public class PlatformerController2D : MonoBehaviour
     }
 
 
-    /*
-     * Enables all functions called in the Update method. 
-     */
     public void enable()
     {
         isEnabled = true;
     }
 
 
-    /*
-     * Disables all functions in the Update method. Note, this may
-     * not fully freeze all functionality (for example, if velocity is not
-     * zeroed out).
-     */
     public void disable()
     {
         isEnabled = false;
     }
 
 
-    /*
-     * One-time add of force to x-axis velocity. Example of use would be a jump.
-     */
     public void addForceXVel(float addvel)
     {
         activeXVel += addvel;
     }
 
 
-    /*
-     * Sets force on x-axis intended to be used as the basis of the velocity 
-     * each update (likely a range from -1 to 1). This is multiplied by speed
-     * and adjusted by other factors, and can be directly fed the x-axis from
-     * controller/button input
-     */
     public void setActiveXVel(float newvel)
     {
         activeXVel = newvel;
     }
 
 
-    /*
-     * One-time add of force to y-axis velocity. Example of use would be a jump.
-     */
     public void addForceYVel(float addvel)
     {
         activeYVel += addvel;
     }
 
 
-    /*
-     * Sets force on y-axis intended to be used as the basis of the velocity 
-     * each update (likely a range from -1 to 1). This is multiplied by speed
-     * and adjusted by other factors, and can be directly fed the y-axis from
-     * controller/button input
-     */
     public void setActiveYVel(float newvel)
     {
         activeYVel = newvel;
     }
 
 
-    /*
-     * Checks that there are currently lower vertical collisions (grounded, via
-     * the canJump var), and if there are "jumps" via one time y-velocity add.
-     */
     public void Jump(){
-        if (canJump)
+        if (canJump && !isDucking)
         {
             velocity.y += jumpVelocity;
             myAnimator.SetBool("isJumping", true);
@@ -180,13 +117,25 @@ public class PlatformerController2D : MonoBehaviour
     }
 
 
-    /*
-     * Spawns prefab to attack in front of the sprite. Although "attacks" could
-     * take a number for forms, the intended approach for this generic attack
-     * is for the prefab to have a collider that checks for collisions with
-     * objects of a certain tag (for example, "Enemy"), then removes health
-     * from that object.
-     */
+    public void Duck() {
+        if (!isDucking)
+        {
+            isDucking = true;
+            resizeColliderY(.5f);
+        }
+    }
+
+
+    public void Unduck() {
+        if (isDucking)
+        {
+            isDucking = false;
+            resizeColliderY(2f);
+        }
+
+    }
+
+
     public void Attack() {
         if (genericAttack != null) {
             GameObject attackObject = Instantiate(genericAttack, CalculateItemSpawnLocation(), Quaternion.identity);
@@ -234,9 +183,6 @@ public class PlatformerController2D : MonoBehaviour
             }
         }
 
-        //tracks how many continuous cycles we've had vertical collisions for.
-        //This isn't actually used for anything, but could hypothecally be used
-        //for vertical bounces as we currently have for horizontal bounces.
         if (hadVertHit) {
             framesVerticalCol++;
             framesVerticalCol = Mathf.Min(framesVerticalCol, int.MaxValue - 1);
@@ -283,9 +229,6 @@ public class PlatformerController2D : MonoBehaviour
             }
         }
 
-        //Tracks how many contiguous cycles we've had horizontal collisions. 
-        //This is used to handle horizontal bounces (the only happen if there's
-        //no active x velocity on the first time a wall is hit).
         if (hadHorizHit)
         {
             framesHorizontalCol++;
@@ -298,10 +241,6 @@ public class PlatformerController2D : MonoBehaviour
     }
 
 
-    /*
-     * Adjusts the angle of the velocity according to the normal of the slope
-     * we're colliding with, so the object "climbs" the slope.
-     */
     void slopeAdjustment(Vector2 slopeNormal)
     {
         float slopeAngle = Vector2.Angle(slopeNormal, Vector2.up);
@@ -311,17 +250,16 @@ public class PlatformerController2D : MonoBehaviour
     }
 
 
-    /*
-     * UpdateVelocity takes the active x and y velocity (likely from input), and
-     * uses the various modifiers like gravity, drag and bounces to calculate a
-     * new velocity.
-     */
     void UpdateVelocity()
     {
 
         //handle gravity
         velocity.y += gravity * Time.deltaTime;
         velocity.y *= Time.timeScale;
+
+        if (isDucking) {
+            activeXVel = 0f;
+        }
 
         if ((activeXVel < -.3f) || (activeXVel > .3f))
         {
@@ -338,14 +276,15 @@ public class PlatformerController2D : MonoBehaviour
             else
             {
                 horizontalSpeed -= (Time.deltaTime * xDrag);
+                if (horizontalSpeed < 0.0f) {
+                    horizontalSpeed = 0.0f;
+                }
                 velocity.x = horizontalSpeed * Time.deltaTime * Mathf.Sign(velocity.x);
                 if (framesHorizontalCol == 1) {
                     velocity.x *= -1;
                 }
             }
         }
-
-        //reset activeXVel to 0f. This needs to be re-asserted each cycle.
         activeXVel = 0.0f;
     }
 
@@ -364,6 +303,12 @@ public class PlatformerController2D : MonoBehaviour
         else if (velocity.x > 0.0)
         {
             myRenderer.flipX = false;
+        }
+
+        if (isDucking) {
+            myAnimator.SetBool("isDucking", true);
+        } else {
+            myAnimator.SetBool("isDucking", false);
         }
     }
 
@@ -399,13 +344,30 @@ public class PlatformerController2D : MonoBehaviour
     }
 
 
-    /*
-     * Takes in to account sprite direction and size to pick a good place to 
-     * spawn used "items" in front of the object.
-     */
     Vector3 CalculateItemSpawnLocation(float xPadding = 8f) {
-        float itemLocationX = ((myRenderer.size.x / 2) + xPadding) * Mathf.Sign(velocity.x) + transform.position.x;
-        return new Vector3(itemLocationX, transform.position.y, -1);
+        //figure out whether we should be on left or right side. assumes default is facing right
+        float facingDir = 1.0f;
+        if (myRenderer.flipX) {
+            facingDir = -1.0f;
+        }
 
+        float itemLocationX = ((myRenderer.size.x / 2) + xPadding) * facingDir + myCollider.bounds.center.x;
+        return new Vector3(itemLocationX, myCollider.bounds.center.y, -1);
+
+    }
+
+
+    void resizeColliderY(float newScale=1f) {
+        Debug.Log("old offset" + myCollider.offset);
+        Debug.Log("old size " + myCollider.size);
+
+        float newSizeY = myCollider.size.y * newScale;
+        float newOffsetY = (myCollider.size.y - newSizeY) / 2;
+
+        myCollider.size = new Vector2(myCollider.size.x, newSizeY);
+        myCollider.offset = new Vector2(myCollider.offset.x, myCollider.offset.y - newOffsetY);
+
+        Debug.Log("new offset" + myCollider.offset);
+        Debug.Log("new size " + myCollider.size);
     }
 }
