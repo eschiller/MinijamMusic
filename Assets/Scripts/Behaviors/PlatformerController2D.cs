@@ -147,6 +147,7 @@ public class PlatformerController2D : MonoBehaviour
         if (genericAttack != null) {
             GameObject attackObject = Instantiate(genericAttack, CalculateItemSpawnLocation(), Quaternion.identity);
             attackObject.GetComponent<SpriteRenderer>().flipX = myRenderer.flipX;
+            attackObject.transform.SetParent(transform, true);
         } else {
             Debug.Log("Can't attack. Generic attack hasn't been set in PlatfomerController2d.");
         }
