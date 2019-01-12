@@ -19,6 +19,7 @@ public class PlatformerController2D : MonoBehaviour
     public float maxClimbAngle = 50f;
     public float xDrag = 10f;
     public float xBounceFactor = 0.0f;
+    public int bonusJumps = 1;
 
     private bool isEnabled;
     private int framesHorizontalCol = 0;
@@ -26,6 +27,7 @@ public class PlatformerController2D : MonoBehaviour
 
     bool canJump = false;
     bool isDucking = false;
+    private int remainingJumps;
     float horizontalRaySpacing;
     float horizontalSpeed;
     float verticalRaySpacing;
@@ -54,6 +56,7 @@ public class PlatformerController2D : MonoBehaviour
         CalculateRaySpacing();
         velocity = Vector2.zero;
         isEnabled = true;
+        remainingJumps = bonusJumps;
     }
 
 
@@ -110,9 +113,13 @@ public class PlatformerController2D : MonoBehaviour
     public void Jump(){
         if (canJump && !isDucking)
         {
-            velocity.y += jumpVelocity;
+            remainingJumps = bonusJumps;
+            velocity.y = jumpVelocity;
             myAnimator.SetBool("isJumping", true);
             canJump = false;
+        } else if (remainingJumps > 0) {
+            velocity.y = jumpVelocity;
+            remainingJumps -= 1;
         }
     }
 
