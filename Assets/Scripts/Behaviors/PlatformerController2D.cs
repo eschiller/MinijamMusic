@@ -1,4 +1,42 @@
-﻿using UnityEngine;
+﻿/*
+ * PlatformerController2D is intended to be a generic physics controller for
+ * use in platformers without using the built in unity physics engine (instead
+ * rays are used to check for collisions).
+ * 
+ * Other scripts (for example, and input handling script in the case of players)
+ * should utilize this controller primarily through the setActiveX/YVel
+ * functions, where are for use with continuous input, or the addForceX/YVel
+ * functions, which are for one-time additions of velocity. Additionally, the 
+ * Jump and Attack functions can be used as expected. Attack will simply spawn
+ * the prefab specified in the Generic Attack field in the inspector (for an
+ * example of this, check Assets/Prefabs/Items/GenericAttack).
+ * 
+ * There are also a series of modifiers for the physics of the gameobject, such
+ * as gravity, jumpVelocity, xDrag (friction) and xBounceFactor (amount the
+ * the asset bounces off walls).
+ * 
+ * To fully utilize the animation transitions, an Animator should be set up with
+ * at least three states:
+ *   * Idle
+ *   * Moving
+ *   * Jumping
+ * 
+ * Animator parameters isJumping and runVelocity must be set up to handle
+ * transitions between these.
+ * 
+ * Current physics default values are set for mid-size (think 16-bit era) pixel
+ * art sprites at 1 PPU. At some point I'd like to dynamically set this value 
+ * based on asset sizes, but for the time being, if you add this to a gameobject
+ * and it's not responding as expected, the physics settings likely need to be
+ * tweaked to better values for your sprites/PPU settings.
+ * 
+ * In order for collisions to work correctly, either the gameobject will need
+ * to be set to the IgnoreRaycase layer, or probably the better option is to set
+ * per-project settings of Edit -> Project Settings -> Queries start in 
+ * colliders to "off".
+ */
+
+using UnityEngine;
 using System.Collections;
 
 [RequireComponent(typeof(BoxCollider2D))]
@@ -73,43 +111,73 @@ public class PlatformerController2D : MonoBehaviour
         }
     }
 
-
+    /*
+    * Enables all functions called in the Update method. 
+    */
     public void enable()
     {
         isEnabled = true;
     }
 
 
+    /*
+    * Disables all functions in the Update method. Note, this may
+    * not fully freeze all functionality (for example, if velocity is not
+    * zeroed out).
+    */
     public void disable()
     {
         isEnabled = false;
     }
 
 
+
+    /*
+     * One-time add of force to x-axis velocity. Example of use would be a jump.
+     */
     public void addForceXVel(float addvel)
     {
         activeXVel += addvel;
     }
 
 
+    /*
+    * Sets force on x-axis intended to be used as the basis of the velocity 
+    * each update (likely a range from -1 to 1). This is multiplied by speed
+    * and adjusted by other factors, and can be directly fed the x-axis from
+    * controller/button input
+    */
     public void setActiveXVel(float newvel)
     {
         activeXVel = newvel;
     }
 
 
+    /*
+    * One-time add of force to y-axis velocity. Example of use would be a jump.
+    */
     public void addForceYVel(float addvel)
     {
         activeYVel += addvel;
     }
 
 
+    /*
+    * Sets force on y-axis intended to be used as the basis of the velocity 
+    * each update (likely a range from -1 to 1). This is multiplied by speed
+    * and adjusted by other factors, and can be directly fed the y-axis from
+    * controller/button input
+    */
     public void setActiveYVel(float newvel)
     {
         activeYVel = newvel;
     }
 
 
+    /*
+    * Checks that there are currently lower vertical collisions (grounded, via
+    * the canJump var), and if there are "jumps" via one time y-velocity add.
+    */
     public void Jump(){
         if (canJump && !isDucking)
         {
@@ -143,6 +211,13 @@ public class PlatformerController2D : MonoBehaviour
     }
 
 
+    /*
+     * Spawns prefab to attack in front of the sprite. Although "attacks" could
+     * take a number for forms, the intended approach for this generic attack
+     * is for the prefab to have a collider that checks for collisions with
+     * objects of a certain tag (for example, "Enemy"), then removes health
+     * from that object.
+     */
     public void Attack() {
         if (genericAttack != null) {
             GameObject attackObject = Instantiate(genericAttack, CalculateItemSpawnLocation(), Quaternion.identity);
@@ -172,6 +247,9 @@ public class PlatformerController2D : MonoBehaviour
             hit = Physics2D.Raycast(rayOriginVert + Vector2.right * verticalRaySpacing * i, rayDirectionVert, Mathf.Abs(rayDistanceVert));
             if (hit)
             {
+                //tracks how many continuous cycles we've had vertical collisions for.
+                //This isn't actually used for anything, but could hypothecally be used
+                //for vertical bounces as we currently have for horizontal bounces.
                 hadVertHit = true;
                 if (hit.collider.gameObject.tag == "platform")
                 {
@@ -219,6 +297,9 @@ public class PlatformerController2D : MonoBehaviour
 
             if (hit)
             {
+                //Tracks how many contiguous cycles we've had horizontal collisions. 
+                //This is used to handle horizontal bounces (the only happen if there's
+                //no active x velocity on the first time a wall is hit).
                 hadHorizHit = true;
                 if (hit.collider.gameObject.tag == "platform")
                 {
@@ -249,6 +330,10 @@ public class PlatformerController2D : MonoBehaviour
     }
 
 
+    /*
+     * Adjusts the angle of the velocity according to the normal of the slope
+     * we're colliding with, so the object "climbs" the slope.
+     */
     void slopeAdjustment(Vector2 slopeNormal)
     {
         float slopeAngle = Vector2.Angle(slopeNormal, Vector2.up);
@@ -258,6 +343,11 @@ public class PlatformerController2D : MonoBehaviour
     }
 
 
+    /*
+     * UpdateVelocity takes the active x and y velocity (likely from input), and
+     * uses the various modifiers like gravity, drag and bounces to calculate a
+     * new velocity.
+     */
     void UpdateVelocity()
     {
 
@@ -293,6 +383,8 @@ public class PlatformerController2D : MonoBehaviour
                 }
             }
         }
+
+        //reset activeXVel to 0f. This needs to be re-asserted each cycle.
         activeXVel = 0.0f;
     }
 
@@ -352,6 +444,10 @@ public class PlatformerController2D : MonoBehaviour
     }
 
 
+    /*
+     * Takes in to account sprite direction and size to pick a good place to 
+     * spawn used "items" in front of the object.
+     */
     Vector3 CalculateItemSpawnLocation(float xPadding = 8f) {
         //figure out whether we should be on left or right side. assumes default is facing right
         float facingDir = 1.0f;
