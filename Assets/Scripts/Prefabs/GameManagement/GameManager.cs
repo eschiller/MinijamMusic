@@ -74,7 +74,6 @@ public class GameManager : MonoBehaviour
 
 
     public void WinGame() {
-        Debug.Log("In gm.WinGame");
         myHUDManager.SetMiddleText("YOU WIN!");
         Time.timeScale = .5f;
     }
