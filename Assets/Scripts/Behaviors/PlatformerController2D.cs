@@ -65,6 +65,7 @@ public class PlatformerController2D : MonoBehaviour
 
     bool canJump = false;
     bool isDucking = false;
+    bool isDownJumping = false;
     private int remainingJumps;
     float horizontalRaySpacing;
     float horizontalSpeed;
@@ -185,10 +186,18 @@ public class PlatformerController2D : MonoBehaviour
             velocity.y = jumpVelocity;
             myAnimator.SetBool("isJumping", true);
             canJump = false;
+        } else if (canJump && isDucking) {
+            isDownJumping = true;
+            Invoke("UnDownJump", .2f);
         } else if (remainingJumps > 0) {
             velocity.y = jumpVelocity;
             remainingJumps -= 1;
         }
+    }
+
+
+    public void UnDownJump() {
+        isDownJumping = false;
     }
 
 
@@ -237,8 +246,12 @@ public class PlatformerController2D : MonoBehaviour
         RaycastHit2D hit ;
         bool hadVertHit = false;
 
-        //check vertical collisions
+        //get vertical direction. If we're downjumping, we'll pretent it's up to 
+        //allow platform fallthrough
         rayDirectionVert = (velocity.y <= 0 ? Vector2.down : Vector2.up);
+        //if (isDownJumping) {
+        //    rayDirectionVert = Vector2.up;
+        //}
         rayOriginVert = (velocity.y <= 0 ? raycastOrigins.bottomLeft : raycastOrigins.topLeft);
         rayDistanceVert = (Mathf.Abs(velocity.y) + skinWidth) * rayDirectionVert.y;
         for (int i = 0; i < verticalRayCount; i++)
@@ -251,7 +264,8 @@ public class PlatformerController2D : MonoBehaviour
                 //This isn't actually used for anything, but could hypothecally be used
                 //for vertical bounces as we currently have for horizontal bounces.
                 hadVertHit = true;
-                if (hit.collider.gameObject.tag == "platform")
+                if ((hit.collider.gameObject.tag == "platform") ||
+                    ((hit.collider.gameObject.tag == "passthrough_platform") && (rayDirectionVert == Vector2.down) && !isDownJumping))
                 {
                     velocity.y = (hit.distance - skinWidth) * rayDirectionVert.y;
                     rayDistanceVert = hit.distance;
