@@ -246,12 +246,8 @@ public class PlatformerController2D : MonoBehaviour
         RaycastHit2D hit ;
         bool hadVertHit = false;
 
-        //get vertical direction. If we're downjumping, we'll pretent it's up to 
-        //allow platform fallthrough
+
         rayDirectionVert = (velocity.y <= 0 ? Vector2.down : Vector2.up);
-        //if (isDownJumping) {
-        //    rayDirectionVert = Vector2.up;
-        //}
         rayOriginVert = (velocity.y <= 0 ? raycastOrigins.bottomLeft : raycastOrigins.topLeft);
         rayDistanceVert = (Mathf.Abs(velocity.y) + skinWidth) * rayDirectionVert.y;
         for (int i = 0; i < verticalRayCount; i++)
