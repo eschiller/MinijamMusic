@@ -11,6 +11,7 @@ public class CharacterManager : MonoBehaviour {
 
     protected SpriteRenderer myRenderer;
 
+    public Transform targetTransform;
 
     // Update is called once per frame
     void Update () {
@@ -42,10 +43,10 @@ public class CharacterManager : MonoBehaviour {
 
         //set animation for death
         isDead = true;
-        Destroy(gameObject, .80f);
-        InvokeRepeating("FlipRenderer", 0.0f, .08f);
-
-
+        Destroy(gameObject, .40f);
+        //InvokeRepeating("FlipRenderer", 0.0f, .08f);
+        Debug.Log("about to set animation to dead");
+        GetComponent<Animator>().SetBool("isDead", true);
     }
 
 
@@ -56,5 +57,9 @@ public class CharacterManager : MonoBehaviour {
             GetComponent<SpriteRenderer>().color = Color.white;
             yield return new WaitForSeconds(0.1f);
         }
+    }
+
+    public void SetTargetTransform(Transform t) {
+        targetTransform = t;
     }
 }
