@@ -38,11 +38,12 @@ public class LevelManager : MonoBehaviour {
     public void CheckForWin() {
         int enemyCount = GameObject.FindGameObjectsWithTag("Enemy").Length;
 
-        Debug.Log("Enemy count is " + enemyCount);
         //Simple win state of checking of all enemies are dead
         if (enemyCount == 0) {
-            Debug.Log("Gonna win the game");
-            gameMgr.WinGame();
+            if (gameMgr != null)
+            {
+                gameMgr.WinGame();
+            }
         }
     }
 
@@ -51,7 +52,10 @@ public class LevelManager : MonoBehaviour {
         //Simple win state of checking of all enemies are dead
         if (GameObject.FindGameObjectsWithTag("Player").Length == 0)
         {
-            gameMgr.LoseGame();
+            if (gameMgr != null)
+            {
+                gameMgr.LoseGame();
+            }
         }
     }
 
