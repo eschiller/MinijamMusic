@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public abstract class FSMState 
 {
-    public StateMachine parentMachine ;
+    public StateMachine machine ;
 
 
     abstract public FSMState CheckForNewState();
@@ -13,6 +13,6 @@ public abstract class FSMState
     abstract public void UpdateState();
 
     public void SetStateMachine(StateMachine m) {
-        this.parentMachine = m;
+        this.machine = m;
     }
 }

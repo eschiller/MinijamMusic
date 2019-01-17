@@ -43,7 +43,7 @@ public class WanderState : FSMState
         if (timeCount > this.expireTime)
         {
             this.timeCount = 0.0f;
-            this.parentMachine.ChangeState(nextState);
+            this.machine.ChangeState(nextState);
         }
     }
 }

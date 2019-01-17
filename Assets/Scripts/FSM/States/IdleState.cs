@@ -33,7 +33,7 @@ public class IdleState : FSMState
         timeCount += Time.deltaTime;
         if (timeCount > this.expireTime) {
             this.timeCount = 0.0f;
-            this.parentMachine.ChangeState(nextState);
+            this.machine.ChangeState(nextState);
         }
     }
 }
