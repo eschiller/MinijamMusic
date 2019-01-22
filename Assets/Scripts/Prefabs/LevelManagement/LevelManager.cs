@@ -7,6 +7,7 @@ public class LevelManager : MonoBehaviour {
     public int players;
     public Transform player1;
     public Transform player2;
+    private Dictionary<string, GameObject> allEnemies;
 
     public GameObject p1cam;
     public GameObject p1coopcam;
@@ -17,6 +18,11 @@ public class LevelManager : MonoBehaviour {
 
     private GameObject cam1;
     private GameObject cam2;
+
+
+    public LevelManager(){
+        allEnemies = new Dictionary<string, GameObject>();
+    }
 
     // Use this for initialization
     void Start () {
@@ -29,22 +35,33 @@ public class LevelManager : MonoBehaviour {
     }
 
     // Update is called once per frame
-    void Update () {
+    void Update()
+    {
         CheckForWin();
         CheckForLoss();
+        UpdateEnemies();
     }
 
 
-    public void CheckForWin() {
-        int enemyCount = GameObject.FindGameObjectsWithTag("Enemy").Length;
+    public void SpawnEnemy(string eName, GameObject ePrefab, Vector3 eLocation) {
+        GameObject newEnemy = Instantiate(ePrefab, eLocation, Quaternion.identity);
+        allEnemies.Add(eName, newEnemy);
+    }
 
-        //Simple win state of checking of all enemies are dead
-        if (enemyCount == 0) {
-            if (gameMgr != null)
-            {
-                gameMgr.WinGame();
+    public int GetEnemyCount(){
+        return allEnemies.Count;
+    }
+
+    private void UpdateEnemies(){
+        foreach(var enemyKey in allEnemies.Keys) {
+            if (allEnemies[enemyKey] == null) {
+                allEnemies.Remove(enemyKey);
             }
         }
+    }
+
+    public void CheckForWin() {
+   
     }
 
     public void CheckForLoss()
