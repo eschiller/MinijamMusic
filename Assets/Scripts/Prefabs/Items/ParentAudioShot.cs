@@ -131,8 +131,13 @@ public class ParentAudioShot : MonoBehaviour {
         {
             Debug.Log("collide with target");
             other.gameObject.GetComponent<CharacterManager>().LoseHealth(attackDamage);
+            myAudioSizer.Unpause();
             Destroy(transform.gameObject);
 
+        }
+        if (other.gameObject.name == "SpiderBoss") {
+            BossManager myBM = other.GetComponent<BossManager>();
+            myBM.BeHurt();
         }
         else if (other.transform.tag == "platform"){
             Debug.Log("But didn't collide with target");

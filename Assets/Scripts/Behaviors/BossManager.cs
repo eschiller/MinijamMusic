@@ -8,12 +8,18 @@ public class BossManager : CharacterManager {
     public int touchDamange = 1;
     bool isDead = false;
 
+    float hurtTimer = 0f;
+    float hurtLength = 1f;
+    bool isHurt = false;
+
     BoxCollider2D myCollider;
+    Animator myAnimator;
 
 
 	// Use this for initialization
 	void Start () {
         myCollider = GetComponent<BoxCollider2D>();
+        myAnimator = GetComponent<Animator>();
 	}
 
     public override void Die()
@@ -32,6 +38,20 @@ public class BossManager : CharacterManager {
     private void Update()
     {
         Debug.Log("boss health is " + health);
+        if (isHurt)
+        {
+            hurtTimer += Time.deltaTime;
+            if (hurtTimer > hurtLength)
+            {
+                myAnimator.SetBool("isHurt", false);
+                hurtTimer = 0f;
+                isHurt = false;
+            }
+        }
+
+        if (health < 0) {
+            Die();
+        }
     }
 
     public override void LoseHealth(int loss)
@@ -74,6 +94,11 @@ public class BossManager : CharacterManager {
                 transform.Translate(new Vector3(0f, 5f, 0f));
             }
         }
+    }
+
+    public void BeHurt() {
+        myAnimator.SetBool("isHurt", true);
+        isHurt = true;
     }
 
     private void OnTriggerStay2D(Collider2D collision)

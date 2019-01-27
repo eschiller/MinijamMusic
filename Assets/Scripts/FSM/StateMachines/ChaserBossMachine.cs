@@ -13,7 +13,7 @@ public class ChaserBossMachine : StateMachine {
 
         AddState("wander", new BossWanderState("idle", 1.0f, wanderStateSpeed, control));
         AddState("idle", new BossIdleState("patrol", 2.0f));
-        AddState("patrol", new BossPatrolState(200f, wanderStateSpeed, 350f, "Player", control, cm));
+        AddState("patrol", new BossPatrolState(200f, wanderStateSpeed, 300f, "Player", control, cm));
         AddState("chase", new BossChaseState(wanderStateSpeed, 400f, control, cm));
         ChangeState("idle");
     }
