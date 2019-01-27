@@ -7,7 +7,7 @@ using System.Collections;
 public class PatrolState : FSMState
 {
     public int speed = 100;
-    public PlatformerController2D charController;
+    public OverheadController2D charController;
     public CharacterManager charManager;
     public float expireTime = 1.0f;
     public string attackTarget = "Player";
@@ -20,7 +20,7 @@ public class PatrolState : FSMState
 
     public PatrolState(float expireTime, int speed, 
                        float minimumDistance, string attackTarget, 
-                       PlatformerController2D controller, CharacterManager cm) {
+                       OverheadController2D controller, CharacterManager cm) {
         rnd = new System.Random();
 
         this.expireTime = expireTime;

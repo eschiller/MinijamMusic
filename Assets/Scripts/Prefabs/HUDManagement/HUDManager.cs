@@ -18,8 +18,8 @@ public class HUDManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        allCanvas = GameObject.Find("AllCanvas");
-        middleText = transform.Find("AllCanvas/MiddleText").GetComponent<Text>();
+        allCanvas = GameObject.Find("TextCanvas");
+        middleText = transform.Find("TextCanvas/MiddleText").GetComponent<Text>();
         middleText.enabled = false;
     }
 

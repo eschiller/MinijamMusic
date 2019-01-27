@@ -61,7 +61,13 @@ public class LevelManager : MonoBehaviour {
     }
 
     public void CheckForWin() {
-   
+        if (GameObject.Find("SpiderBoss")  == null) {
+            if (gameMgr != null)
+            {
+                gameMgr.WinGame();
+            }
+        }
+
     }
 
     public void CheckForLoss()

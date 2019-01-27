@@ -67,8 +67,9 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape)) {
-            Debug.Log("ESCAPE KEY IS DOWN!");
-            TogglePause();
+            //Debug.Log("ESCAPE KEY IS DOWN!");
+            //TogglePause();
+            Application.Quit();
         }
     }
 

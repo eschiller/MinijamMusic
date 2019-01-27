@@ -39,7 +39,7 @@ public class CharacterManager : MonoBehaviour {
         health += gain;
     }
 
-    public void Die() {
+    public virtual void Die() {
 
         //set animation for death
         isDead = true;

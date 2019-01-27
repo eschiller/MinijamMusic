@@ -5,7 +5,7 @@ public class ChaseState : FSMState
 {
     public int speed = 100;
     public float maximumDistance = 100f;
-    public PlatformerController2D charController;
+    public OverheadController2D charController;
     public CharacterManager charManager;
 
 
@@ -14,7 +14,7 @@ public class ChaseState : FSMState
 
     public ChaseState(int speed,
                        float maximumDistance, 
-                       PlatformerController2D controller, CharacterManager cm) {
+                       OverheadController2D controller, CharacterManager cm) {
         rnd = new System.Random();
 
         //speed does nothing
@@ -40,7 +40,6 @@ public class ChaseState : FSMState
 
     public override void UpdateState()
     {
-        Debug.Log("In chase state");
 
         //if somehow we're here with no target, go back to the last state
         if (charManager.targetTransform == null) {
@@ -49,7 +48,6 @@ public class ChaseState : FSMState
 
         //if the target has gotten too far, untarget and move back to idle
         float dis = Vector3.Distance(charController.transform.position, charManager.targetTransform.position);
-        Debug.Log("Target is " + dis + " distance");
 
         if (dis > maximumDistance) {
             Debug.Log("Lost target");
@@ -57,20 +55,33 @@ public class ChaseState : FSMState
             machine.ChangeState("idle");
         }
 
-        //figure out which direction to walk to go towards target
-        float dir = 0f;
+        //figure out which direction to walk to go towards target X
+        float dirx = 0f;
         float distanceThreshold = charController.speed / 8;
         float relativeX = charController.transform.position.x - charManager.targetTransform.position.x;
         if (relativeX < distanceThreshold * -1) {
-            Debug.Log("target is right");
-            dir = 1f;
+            dirx = 1f;
         }
         if (relativeX > distanceThreshold)
         {
-            Debug.Log("target is left");
-            dir = -1f;
+            dirx = -1f;
         }
 
-        charController.setActiveXVel(dir);
+        charController.setActiveXVel(dirx);
+
+
+        //figure out which direction to walk to go towards target Y
+        float diry = 0f;
+        float relativeY = charController.transform.position.y - charManager.targetTransform.position.y;
+        if (relativeY < distanceThreshold * -1)
+        {
+            diry = 1f;
+        }
+        if (relativeY > distanceThreshold)
+        {
+            diry = -1f;
+        }
+
+        charController.setActiveYVel(diry);
     }
 }
