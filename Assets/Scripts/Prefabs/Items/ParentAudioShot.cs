@@ -13,11 +13,16 @@ public class ParentAudioShot : MonoBehaviour {
 
     private float timeToDeath = 0.0f;
     private float amplitude = 0f;
+    private AudioSizer myAudioSizer;
+
+    private bool alreadyUnpaused = false;
 
 	// Use this for initialization
 	void Start () {
         myAmplitudeSampler = GameObject.Find("AudioPlayer").GetComponent<AmplitudeSampler>();
         amplitude = myAmplitudeSampler.GetMusicAmplitude();
+        myAudioSizer = GameObject.Find("AudioLevel").GetComponent<AudioSizer>();
+        myAudioSizer.Pause();
 
         if ((ySpeed > 1f) || (ySpeed < -1f))
         {
@@ -104,6 +109,10 @@ public class ParentAudioShot : MonoBehaviour {
         Vector2 velocity = Vector2.zero;
 
         timeToDeath += Time.deltaTime;
+        if ((timeToDeath > 1f) && !alreadyUnpaused) {
+            myAudioSizer.Unpause();
+            alreadyUnpaused = true;
+        }
         if (timeToDeath > lastingTime) {
             Destroy(transform.gameObject);
         }
