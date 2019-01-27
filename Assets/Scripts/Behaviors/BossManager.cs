@@ -29,6 +29,18 @@ public class BossManager : CharacterManager {
         GameObject gm = GameObject.Find("GameManager");
     }
 
+    private void Update()
+    {
+        Debug.Log("boss health is " + health);
+    }
+
+    public override void LoseHealth(int loss)
+    {
+        Debug.Log("health is " + health);
+        health -= loss;
+        StartCoroutine("flashRed");
+    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         Debug.Log("Colliding enemy!");

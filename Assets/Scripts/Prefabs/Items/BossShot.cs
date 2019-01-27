@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AudioShot : MonoBehaviour {
+public class BossShot : MonoBehaviour {
     private AmplitudeSampler myAmplitudeSampler;
     public int attackDamage = 1;
     public string target = "Enemy";
@@ -34,12 +34,11 @@ public class AudioShot : MonoBehaviour {
         transform.Translate(velocity);
 	}
 
-
     private void OnTriggerEnter2D(Collider2D other)
     {
         Debug.Log("In attack collision stay.");
         Debug.Log("target tag is " + other.transform.tag);
-        if (other.transform.tag == "Enemy")
+        if (other.transform.tag == "Player")
         {
             Debug.Log("collide with target");
             other.gameObject.GetComponent<CharacterManager>().LoseHealth(attackDamage);

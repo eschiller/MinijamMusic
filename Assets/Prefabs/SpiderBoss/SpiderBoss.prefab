@@ -20,8 +20,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4063206011493684}
   - component: {fileID: 212518381134042954}
-  - component: {fileID: 114679833032337526}
-  - component: {fileID: 114480003524082676}
+  - component: {fileID: 114129791661673868}
+  - component: {fileID: 114282590092609320}
   - component: {fileID: 61526127234520208}
   - component: {fileID: 114064999675877678}
   - component: {fileID: 50645663196280976}
@@ -136,7 +136,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8998ff137efed4fd19cc90d5e03fea61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  genericAttack: {fileID: 0}
+  genericAttack: {fileID: 1548435651250270, guid: a9531b7b16d774a6db7e33233f2deee4,
+    type: 2}
   activeXVel: 0
   activeYVel: 0
   skinWidth: 0.03
@@ -149,7 +150,7 @@ MonoBehaviour:
   attackTimeout: 1
   makeAttackChild: 0
   blockEnemies: 1
---- !u!114 &114480003524082676
+--- !u!114 &114129791661673868
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -157,25 +158,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 1363227904695622}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 341ed6780c13944ecbae27ffffe1f4ac, type: 3}
+  m_Script: {fileID: 11500000, guid: ce4f11f93197046e59b211a81eaceb4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wanderStateSpeed: 100
+--- !u!114 &114282590092609320
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1363227904695622}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8396624886dc44759b5f9e1110b33bdd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   health: 100
   targetTransform: {fileID: 0}
-  separateEnemies: 0
+  separateEnemies: 1
   touchDamange: 1
---- !u!114 &114679833032337526
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1363227904695622}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 11fb3c2709b864a44b58f70b2ca1be0c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  wanderStateSpeed: 100
 --- !u!212 &212518381134042954
 SpriteRenderer:
   m_ObjectHideFlags: 1

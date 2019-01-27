@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ParentAudioShot : MonoBehaviour {
+public class BossParentShot : MonoBehaviour {
     private AmplitudeSampler myAmplitudeSampler;
     public int attackDamage = 1;
     public string target = "Enemy";
     public float lastingTime = 5f;
-    public float ySpeed = 2f;
+    public float ySpeed = -2f;
     public float xSpeed = 0f;
     public GameObject subshot;
 
@@ -16,85 +16,83 @@ public class ParentAudioShot : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        myAmplitudeSampler = GameObject.Find("AudioPlayer").GetComponent<AmplitudeSampler>();
-        amplitude = myAmplitudeSampler.GetMusicAmplitude();
 
-        if ((ySpeed > 1f) || (ySpeed < -1f))
+
+        if ((ySpeed > 1f) || (ySpeed < 1f))
         {
-            if (amplitude > .1)
+            if (true)
             {
-                Debug.Log("creating lvl 2 y shots");
+                Debug.Log("creating lvl 2 shots");
                 //left subshot
                 GameObject leftSubshot = Instantiate(subshot, transform.position, Quaternion.identity);
-                leftSubshot.GetComponent<AudioShot>().xSpeed = -.2f;
-                leftSubshot.GetComponent<AudioShot>().ySpeed = ySpeed * .95f;
+                leftSubshot.GetComponent<BossShot>().xSpeed = -.3f;
+                leftSubshot.GetComponent<BossShot>().ySpeed = ySpeed * .95f;
 
                 GameObject rightSubshot = Instantiate(subshot, transform.position, Quaternion.identity);
-                rightSubshot.GetComponent<AudioShot>().xSpeed = .2f;
-                rightSubshot.GetComponent<AudioShot>().ySpeed = ySpeed * .95f;
+                rightSubshot.GetComponent<BossShot>().xSpeed = .3f;
+                rightSubshot.GetComponent<BossShot>().ySpeed = ySpeed * .95f;
             }
 
-            if (amplitude > .2)
+            if (true)
             {
-                Debug.Log("creating lvl 3 y shots");
+                Debug.Log("creating lvl 3 shots");
                 //left subshot
                 GameObject leftSubshot = Instantiate(subshot, transform.position, Quaternion.identity);
-                leftSubshot.GetComponent<AudioShot>().xSpeed = -.4f;
-                leftSubshot.GetComponent<AudioShot>().ySpeed = ySpeed * .90f;
+                leftSubshot.GetComponent<BossShot>().xSpeed = -.6f;
+                leftSubshot.GetComponent<BossShot>().ySpeed = ySpeed * .90f;
 
                 GameObject rightSubshot = Instantiate(subshot, transform.position, Quaternion.identity);
-                rightSubshot.GetComponent<AudioShot>().xSpeed = .4f;
-                rightSubshot.GetComponent<AudioShot>().ySpeed = ySpeed * .90f;
+                rightSubshot.GetComponent<BossShot>().xSpeed = .6f;
+                rightSubshot.GetComponent<BossShot>().ySpeed = ySpeed * .90f;
             }
 
-            if (amplitude > .3)
+            if (true)
             {
-                Debug.Log("creating lvl 3 y shots");
+                Debug.Log("creating lvl 3 shots");
                 //left subshot
                 GameObject leftSubshot = Instantiate(subshot, transform.position, Quaternion.identity);
-                leftSubshot.GetComponent<AudioShot>().xSpeed = -.6f;
+                leftSubshot.GetComponent<AudioShot>().xSpeed = -.9f;
                 leftSubshot.GetComponent<AudioShot>().ySpeed = ySpeed * .85f;
 
                 GameObject rightSubshot = Instantiate(subshot, transform.position, Quaternion.identity);
-                rightSubshot.GetComponent<AudioShot>().xSpeed = .6f;
+                rightSubshot.GetComponent<AudioShot>().xSpeed = .9f;
                 rightSubshot.GetComponent<AudioShot>().ySpeed = ySpeed * .85f;
             }
-        }
-        if ((xSpeed > .8f) || (xSpeed < -.8f)) {
+        } else {
             if (amplitude > .1)
             {
-                Debug.Log("creating lvl 2 xshots");
+                Debug.Log("creating lvl 2 shots");
                 GameObject lowerSubshot = Instantiate(subshot, transform.position, Quaternion.identity);
-                lowerSubshot.GetComponent<AudioShot>().xSpeed = xSpeed * .95f;
                 lowerSubshot.GetComponent<AudioShot>().ySpeed = -.2f;
+                lowerSubshot.GetComponent<AudioShot>().xSpeed = xSpeed * .95f;
 
                 GameObject upperSubshot = Instantiate(subshot, transform.position, Quaternion.identity);
-                upperSubshot.GetComponent<AudioShot>().xSpeed = xSpeed * .95f;
                 upperSubshot.GetComponent<AudioShot>().ySpeed = .2f;
+                upperSubshot.GetComponent<AudioShot>().xSpeed = xSpeed * .95f;
             }
 
             if (amplitude > .2)
             {
-                Debug.Log("creating lvl 3 xshots");
+                Debug.Log("creating lvl 3 shots");
                 GameObject lowerSubshot = Instantiate(subshot, transform.position, Quaternion.identity);
-                lowerSubshot.GetComponent<AudioShot>().xSpeed = xSpeed * .90f;
                 lowerSubshot.GetComponent<AudioShot>().ySpeed = -.4f;
+                lowerSubshot.GetComponent<AudioShot>().xSpeed = xSpeed * .90f;
 
                 GameObject upperSubshot = Instantiate(subshot, transform.position, Quaternion.identity);
-                upperSubshot.GetComponent<AudioShot>().xSpeed = xSpeed * .90f;
                 upperSubshot.GetComponent<AudioShot>().ySpeed = .4f;
+                upperSubshot.GetComponent<AudioShot>().xSpeed = xSpeed * .90f;
             }
 
             if (amplitude > .3)
             {
-                Debug.Log("creating lvl 4 xshots");
+                Debug.Log("creating lvl 3 shots");
                 GameObject lowerSubshot = Instantiate(subshot, transform.position, Quaternion.identity);
-                lowerSubshot.GetComponent<AudioShot>().xSpeed = xSpeed * .85f;
                 lowerSubshot.GetComponent<AudioShot>().ySpeed = -.6f;
+                lowerSubshot.GetComponent<AudioShot>().xSpeed = xSpeed * .85f;
 
                 GameObject upperSubshot = Instantiate(subshot, transform.position, Quaternion.identity);
-                upperSubshot.GetComponent<AudioShot>().xSpeed = xSpeed * .85f;
                 upperSubshot.GetComponent<AudioShot>().ySpeed = .6f;
+                upperSubshot.GetComponent<AudioShot>().xSpeed = xSpeed * .85f;
             }
         }
     }
@@ -118,7 +116,7 @@ public class ParentAudioShot : MonoBehaviour {
     {
         Debug.Log("In attack collision stay.");
         Debug.Log("target tag is " + other.transform.tag);
-        if (other.transform.tag == "Enemy")
+        if (other.transform.tag == "Player")
         {
             Debug.Log("collide with target");
             other.gameObject.GetComponent<CharacterManager>().LoseHealth(attackDamage);

@@ -4,7 +4,7 @@ using System.Collections;
 /*
  * Requires a state with key "chase", and a key "idle" in the state machine
  */
-public class PatrolState : FSMState
+public class BossPatrolState : FSMState
 {
     public int speed = 100;
     public OverheadController2D charController;
@@ -18,7 +18,7 @@ public class PatrolState : FSMState
     private System.Random rnd;
     private bool foundTarget;
 
-    public PatrolState(float expireTime, int speed, 
+    public BossPatrolState(float expireTime, int speed, 
                        float minimumDistance, string attackTarget, 
                        OverheadController2D controller, CharacterManager cm) {
         rnd = new System.Random();
@@ -51,6 +51,7 @@ public class PatrolState : FSMState
         attackTargets = GameObject.FindGameObjectsWithTag(attackTarget);
         foreach (GameObject at in attackTargets) {
             float dis = Vector3.Distance(at.transform.position, charController.transform.position);
+            Debug.Log("found potential target " + dis + " far away");
 
             if (dis < minimumDistance)
             {
@@ -68,7 +69,7 @@ public class PatrolState : FSMState
     {
         Debug.Log("In patrol state");
 
-        charController.setActiveXVel(walkDirection);
+        //charController.setActiveXVel(walkDirection);
 
         LookForTarget();
 
